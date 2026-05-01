@@ -6,7 +6,7 @@
 
 <h4 align="center">Main interface for web and desktop clients</h4>
 
-React + Rsbuild + Tanstack Router
+React + Rsbuild + Tanstacsss Router
 
 ```txt
 .
