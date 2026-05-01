@@ -23,20 +23,25 @@ FROM nginx:alpine
 # Copy the build output from the builder stage
 COPY --from=builder /app/out /usr/share/nginx/html
 
+# Set default port for local testing
+ENV PORT=80
+
 # Overwrite default nginx config to serve the SPA (Single Page Application)
 # This ensures client-side routing works by falling back to index.html
-RUN echo 'server { \
-    listen 80; \
+# We use a template so the Nginx entrypoint can substitute ${PORT} dynamically
+RUN mkdir -p /etc/nginx/templates && \
+    echo 'server { \
+    listen ${PORT}; \
     server_name localhost; \
     location / { \
         root /usr/share/nginx/html; \
         index index.html index.htm; \
         try_files $uri $uri/ /index.html; \
     } \
-}' > /etc/nginx/conf.d/default.conf
+}' > /etc/nginx/templates/default.conf.template
 
-# Expose port 80
-EXPOSE 80
+# Expose the port (mostly for documentation, Railway uses the PORT env var)
+EXPOSE $PORT
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
